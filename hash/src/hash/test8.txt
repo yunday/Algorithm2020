@@ -4595,7 +4595,7 @@ moldy-looking lace frill at the collar and matching lace cuffs.
 There was a knock on the door, and Mrs. Weasley entered, carrying an armful of freshly laun-
 dered Hogwarts robes.
 
-"Here you are," she said, sorting them into two piles. "Now, mind you pack them properly so
+"Here you are," she said, Sorting them into two piles. "Now, mind you pack them properly so
 they don't crease."
 
 "Mum, you've given me Ginny's new dress," said Ron, handing it out to her.
@@ -5809,7 +5809,7 @@ collected several pints.
 
 "This'll keep Madam Pomfrey happy," said Professor Sprout, stoppering the last bottle with a
 cork. "An excellent remedy for the more stubborn forms of acne, bubotuber pus. Should stop
-students resorting to desperate measures to rid themselves of pimples."
+students reSorting to desperate measures to rid themselves of pimples."
 
 "Like poor Eloise Midgen," said Hannah Abbott, a Hufflepuff, in a hushed voice. "She tried to
 curse hers off."
