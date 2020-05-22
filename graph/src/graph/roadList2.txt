@@ -25995,7 +25995,7 @@ Sherwood Elementary School	Lake Oliver
 Sherwood Elementary School	Price Road Baptist Church
 Sherwood Elementary School	Parkview Shopping Center
 Rocky Grove Freewill Baptist Church	Marion County Courthouse
-Rocky Grove Freewill Baptist Church	Marion County – Rankin Fite Airport
+Rocky Grove Freewill Baptist Church	Marion County - Rankin Fite Airport
 Rocky Grove Freewill Baptist Church	W70A-TV (Hamilton)
 Rocky Grove Freewill Baptist Church	Marion Regional Medical Center
 Rocky Grove Freewill Baptist Church	Sell Branch
@@ -39264,7 +39264,7 @@ Rickwood Caverns State Park	Mountain Brook Church
 Rickwood Caverns State Park	Reids
 Pilgrim Home Church	Jack Ward Branch
 Pilgrim Home Church	Sasser School (historical)
-Sell Branch	Marion County – Rankin Fite Airport
+Sell Branch	Marion County - Rankin Fite Airport
 Sell Branch	Summers Branch
 Vetegee Stadium	Tuskegee Industrial Park
 Wash Maybin Branch	New Testament Deliverance Tabernacle
@@ -39366,7 +39366,7 @@ Long Cove	Walker Cove
 Lenox Post Office (historical)	Springhill Methodist Church
 Old Thompson-Centrell Cemetery	Holligan and Moore Cemetery
 Marion Regional Medical Center	Marion County Courthouse
-Marion Regional Medical Center	Marion County – Rankin Fite Airport
+Marion Regional Medical Center	Marion County - Rankin Fite Airport
 Marion Regional Medical Center	Maywood Camp
 Kirk Branch Gas Field	Seven Oaks Cemetery
 Liberty Hill Baptist Church	Old Liberty Hill Cemetery

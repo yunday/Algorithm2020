@@ -11746,7 +11746,7 @@ Schoolhouse Branch Gas Field	-87.745820	30.417980
 WAGC-AM (Centre)	-85.640800	34.128150
 Roman Cemetery	-86.101370	34.533700
 Prices Creek	-86.361620	31.174340
-Marion County – Rankin Fite Airport	-87.995970	34.117270
+Marion County - Rankin Fite Airport	-87.995970	34.117270
 Holly Branch	-87.495550	31.752930
 Pine Dale	-86.827500	34.962310
 Little Hillabee Watershed Dam Number 4	-85.918300	33.213450

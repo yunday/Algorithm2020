@@ -8,11 +8,13 @@ class Node{
     double longitude;
     double latitude;
     double weight;
+    boolean isVisited;
     public Node (String placeName, double longitude, double latitude, double weight){
         this.placeName = placeName;
         this.longitude = longitude;
         this.latitude = latitude;
         this.weight = weight;
+        this.isVisited = false;
     }
 }
 
@@ -26,24 +28,48 @@ public class Graph {
 
     public static void Input(){
         Scanner sc = new Scanner(System.in);
+        String command = sc.nextLine();
         String inputName = sc.nextLine();
         LinkedList<Node> l = circuit(inputName);
-        for(int i=0;i<10;i++)
-            System.out.println(l.get(i).placeName+"\t" +l.get(i).latitude+"\t"+ l.get(i).longitude);
+        
+        if(command.equals("findHop")) findHop(l, 0);
+        else if(command.equals("DFS")) DFS(l);
+        else System.out.println("Please try again");
+    }
+
+    public static void findHop(LinkedList<Node> link, int count){
+        count++;
+        link.getFirst().isVisited = true;
+        if(count ==11) return;
+        for(int i=1;i<link.size();i++){
+            LinkedList<Node> e = circuit(link.get(i).placeName);
+            if(!e.getFirst().isVisited){
+                System.out.println(link.get(i).placeName+"\t"+link.get(i).longitude+"\t"+link.get(i).latitude);
+                findHop(e, count);
+            }
+        }
+    }
+
+    public static void DFS(LinkedList<Node> link){
+        link.getFirst().isVisited=true;
+        for(int i=1;i<link.size();i++){
+            LinkedList<Node> e = circuit(link.get(i).placeName);
+            if(!e.getFirst().isVisited){
+                System.out.println(link.get(i).placeName+"\t"+link.get(i).longitude+"\t"+link.get(i).latitude);
+                DFS(e);
+            }
+        }
     }
 
     public static ArrayList<String> fileOpen(String filename){
         ArrayList<String> fileset=new ArrayList<>();
         try {
             String path=Graph.class.getResource("").getPath();
-            File file = new File(path+ "filename");
+            File file = new File(path+ filename);
             BufferedReader bufReader=new BufferedReader(new FileReader(file));
             String line="";
-            while((line=bufReader.readLine())!=null) {
-                StringTokenizer token = new StringTokenizer(line);
-                while(token.hasMoreTokens())
-                    fileset.add(token.nextToken(" "));
-            }
+            while((line=bufReader.readLine())!=null)
+                fileset.add(line);
             bufReader.close();
             return fileset;
         }catch(FileNotFoundException e) {
@@ -58,7 +84,7 @@ public class Graph {
             StringTokenizer st = new StringTokenizer(fileset.get(i), "\t");
             LinkedList<Node> l = new LinkedList<>();
             l.add(new Node(st.nextToken(), Double.parseDouble(st.nextToken()), Double.parseDouble(st.nextToken()), 0));
-            list.add(i, l);
+            list.add(l);
         }
     }
 
@@ -68,13 +94,16 @@ public class Graph {
             LinkedList<Node> lst = circuit(st.nextToken());
             int j=i;
             while(j<fileset.size()){
-                StringTokenizer token = new StringTokenizer(fileset.get(j++), "\t");
-                if(!lst.getFirst().placeName.equals(token.nextToken())){
-                    i=j; break;
-                }
-                Node n = circuit(token.nextToken()).getFirst();
-                lst.add(new Node(n.placeName, n.longitude, n.latitude, calDistance(lst.getFirst().latitude, lst.getFirst().longitude, n.latitude, n.longitude)));
+                StringTokenizer token = new StringTokenizer(fileset.get(j), "\t");
+                if(!lst.getFirst().placeName.equals(token.nextToken())) break;
+                LinkedList<Node> twoLst = circuit(token.nextToken());
+                Node n = twoLst.getFirst();
+                Node n2 = lst.getFirst();
+                lst.add(new Node(n.placeName, n.longitude, n.latitude, calDistance(n2.latitude, n2.longitude, n.latitude, n.longitude)));
+                twoLst.add(new Node(n2.placeName, n2.longitude, n.latitude, calDistance(n.latitude, n.longitude, n2.latitude, n2.longitude)));
+                j++;
             }
+            i=j;
         }
     }
 
@@ -90,12 +119,7 @@ public class Graph {
         double theta, dist;
         theta = lon1 - lon2;
         dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
-        dist = Math.acos(dist);
-        dist = rad2deg(dist);
-        dist = dist * 60 * 1.1515;
-        dist = dist * 1.609344;
-        dist = dist * 1000.0;
-        return dist;
+        return ((rad2deg(Math.acos(dist)) * 60 * 1.1515) * 1.609344) * 1000.0;
     }
     private static double deg2rad(double deg){
         return (double)(deg*Math.PI/(double)100);
