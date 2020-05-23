@@ -40,7 +40,8 @@ public class Graph {
     public static void findHop(LinkedList<Node> link, int count){
         count++;
         link.getFirst().isVisited = true;
-        if(count ==11) return;
+        if(count ==10) return;
+        if(count ==1) System.out.println(link.getFirst().placeName+"\t"+link.getFirst().longitude+"\t"+link.getFirst().latitude);
         for(int i=1;i<link.size();i++){
             LinkedList<Node> e = circuit(link.get(i).placeName);
             if(!e.getFirst().isVisited){
