@@ -3,12 +3,15 @@ package graph;
 import java.util.*;
 import java.io.*;
 
-class Node{
+class Node implements Comparable<Node>{
     String placeName;
     double longitude;
     double latitude;
     double weight;
     boolean isVisited;
+    double d;
+    Node pi;
+
     public Node (String placeName, double longitude, double latitude, double weight){
         this.placeName = placeName;
         this.longitude = longitude;
@@ -16,6 +19,8 @@ class Node{
         this.weight = weight;
         this.isVisited = false;
     }
+    @Override
+    public int compareTo(Node a){ return this.d>=a.d ? 1:-1; }
 }
 
 public class Graph {
@@ -29,26 +34,91 @@ public class Graph {
     public static void Input(){
         Scanner sc = new Scanner(System.in);
         String command = sc.nextLine();
-        String inputName = sc.nextLine();
-        LinkedList<Node> l = circuit(inputName);
         
-        if(command.equals("findHop")) findHop(l, 0);
-        else if(command.equals("DFS")) DFS(l);
+        if(command.equals("findHop")){
+            String inputName = sc.nextLine();
+            LinkedList<Node> l = circuit(inputName);
+            findHop(l);
+        }
+        else if(command.equals("DFS")){
+            String inputName = sc.nextLine();
+            LinkedList<Node> l = circuit(inputName);
+            DFS(l);
+        }
+        else if(command.equals("Dijkstra")) {
+            String place1 = sc.nextLine();
+            String place2 = sc.nextLine();
+            Dijkstra(place1, place2);
+        }
         else System.out.println("Please try again");
     }
 
-    public static void findHop(LinkedList<Node> link, int count){
-        count++;
-        link.getFirst().isVisited = true;
-        if(count ==10) return;
-        if(count ==1) System.out.println(link.getFirst().placeName+"\t"+link.getFirst().longitude+"\t"+link.getFirst().latitude);
-        for(int i=1;i<link.size();i++){
-            LinkedList<Node> e = circuit(link.get(i).placeName);
-            if(!e.getFirst().isVisited){
-                System.out.println(link.get(i).placeName+"\t"+link.get(i).longitude+"\t"+link.get(i).latitude);
-                findHop(e, count);
+    public static void Dijkstra(String place1, String place2) {
+        PriorityQueue<Node> Q = new PriorityQueue<>();
+        for(LinkedList<Node> i : list){
+            i.getFirst().d = Double.POSITIVE_INFINITY;
+            i.getFirst().pi = null;
+        }
+        Node n = circuit(place1).getFirst();
+        n.d = 0;
+        Q.add(n);
+        while(!Q.isEmpty()){
+            Node u = Q.poll();
+            System.out.println(u.placeName);
+            if(u.placeName.equals(place2)){
+                System.out.println(u.d);
+                break;
+            }
+            LinkedList<Node> uLink = circuit(u.placeName);
+            for(int i = 1 ;i <uLink.size();i++){
+                LinkedList<Node> vLink = circuit(uLink.get(i).placeName);
+                Node v = vLink.getFirst();
+                if(v.d > u.d + uLink.get(i).weight){
+                    Q.remove(v);
+                    v.d = u.d + uLink.get(i).weight;
+                    v.pi = u;
+                    Q.add(v);
+                }
             }
         }
+    }
+
+    public static void findHop(LinkedList<Node> link){
+        PriorityQueue<Node> Q = new PriorityQueue<>();
+        int count =0;
+        for(LinkedList<Node> i : list){
+            i.getFirst().d = 0;
+            i.getFirst().pi = null;
+        }
+        Q.offer(link.getFirst());
+        while(!Q.isEmpty()){
+            Node u = Q.poll();
+            count++;
+            System.out.println(u.placeName+"\t"+u.longitude+"\t"+u.latitude);
+            u.isVisited = true;
+            if(u.d==10) continue;
+            LinkedList<Node> uLink = circuit(u.placeName);
+            for(int i = 1 ;i <uLink.size();i++){
+                LinkedList<Node> vLink = circuit(uLink.get(i).placeName);
+                Node v = vLink.getFirst();
+                if(!v.isVisited){
+                    v.isVisited = true; v.d = u.d+1; v.pi = u;
+                    Q.offer(v);
+                }
+            }
+        }
+        System.out.println(count);
+//        count++;
+//        link.getFirst().isVisited = true;
+//        if(count ==10) return;
+//        if(count ==1) System.out.println(link.getFirst().placeName+"\t"+link.getFirst().longitude+"\t"+link.getFirst().latitude);
+//        for(int i=1;i<link.size();i++){
+//            LinkedList<Node> e = circuit(link.get(i).placeName);
+//            if(!e.getFirst().isVisited){
+//                System.out.println(link.get(i).placeName+"\t"+link.get(i).longitude+"\t"+link.get(i).latitude);
+//                findHop(e, count);
+//            }
+//        }
     }
 
     public static void DFS(LinkedList<Node> link){
@@ -81,8 +151,8 @@ public class Graph {
     }
 
     public static void makeList(ArrayList<String> fileset){
-        for(int i=0;i<fileset.size();i++){
-            StringTokenizer st = new StringTokenizer(fileset.get(i), "\t");
+        for(String i : fileset){
+            StringTokenizer st = new StringTokenizer(i, "\t");
             LinkedList<Node> l = new LinkedList<>();
             l.add(new Node(st.nextToken(), Double.parseDouble(st.nextToken()), Double.parseDouble(st.nextToken()), 0));
             list.add(l);
@@ -123,7 +193,7 @@ public class Graph {
         return ((rad2deg(Math.acos(dist)) * 60 * 1.1515) * 1.609344) * 1000.0;
     }
     private static double deg2rad(double deg){
-        return (double)(deg*Math.PI/(double)100);
+        return (double)(deg*Math.PI/(double)180);
     }
     private static double rad2deg(double rad){
         return (double)(rad*(double)180/Math.PI);
