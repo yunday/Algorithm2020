@@ -108,17 +108,6 @@ public class Graph {
             }
         }
         System.out.println(count);
-//        count++;
-//        link.getFirst().isVisited = true;
-//        if(count ==10) return;
-//        if(count ==1) System.out.println(link.getFirst().placeName+"\t"+link.getFirst().longitude+"\t"+link.getFirst().latitude);
-//        for(int i=1;i<link.size();i++){
-//            LinkedList<Node> e = circuit(link.get(i).placeName);
-//            if(!e.getFirst().isVisited){
-//                System.out.println(link.get(i).placeName+"\t"+link.get(i).longitude+"\t"+link.get(i).latitude);
-//                findHop(e, count);
-//            }
-//        }
     }
 
     public static void DFS(LinkedList<Node> link){
