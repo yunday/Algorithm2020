@@ -43,7 +43,9 @@ public class Graph {
         else if(command.equals("DFS")){
             String inputName = sc.nextLine();
             LinkedList<Node> l = circuit(inputName);
+            dfsSave.append(l.getFirst().placeName).append("\t").append(l.getFirst().longitude).append("\t").append(l.getFirst().latitude).append("\n");
             DFS(l);
+            saveFile();
         }
         else if(command.equals("Dijkstra")) {
             String place1 = sc.nextLine();
@@ -110,14 +112,28 @@ public class Graph {
         System.out.println(count);
     }
 
+    public static StringBuilder dfsSave = new StringBuilder();
     public static void DFS(LinkedList<Node> link){
         link.getFirst().isVisited=true;
         for(int i=1;i<link.size();i++){
             LinkedList<Node> e = circuit(link.get(i).placeName);
             if(!e.getFirst().isVisited){
-                System.out.println(link.get(i).placeName+"\t"+link.get(i).longitude+"\t"+link.get(i).latitude);
+                dfsSave.append(link.get(i).placeName).append("\t").append(link.get(i).longitude).append("\t").append(link.get(i).latitude).append("\n");
                 DFS(e);
             }
+        }
+    }
+
+    public static void saveFile(){
+        try{
+            FileWriter writer=new FileWriter("DFS_file.txt");
+            BufferedWriter bufferedWriter = new BufferedWriter(writer);
+            bufferedWriter.write(dfsSave.toString());
+            writer.flush();
+            bufferedWriter.close();
+        }catch(IOException e){
+            System.out.println("DFS_file.txt 파일을 열 수 없습니다.");
+            e.printStackTrace();
         }
     }
 
