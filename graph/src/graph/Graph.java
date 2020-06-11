@@ -23,6 +23,19 @@ class Node implements Comparable<Node>{
     public int compareTo(Node a){ return this.d>=a.d ? 1:-1; }
 }
 
+class Edge implements Comparable<Edge>{ //크루스칼 노드
+    int a;
+    int b;
+    double weight;
+    public Edge(int a, int b, double weight){
+        this.a = a;
+        this.b = b;
+        this.weight = weight;
+    }
+    @Override
+    public int compareTo(Edge e){return this.weight>=e.weight ? 1:-1;}
+}
+
 public class Graph {
     public static ArrayList<LinkedList<Node>> list = new ArrayList<>();
     public static void main(String[] args) {
@@ -32,6 +45,7 @@ public class Graph {
     }
 
     public static void Input(){
+        System.out.print("command : ");
         Scanner sc = new Scanner(System.in);
         String command = sc.nextLine();
         
@@ -52,7 +66,70 @@ public class Graph {
             String place2 = sc.nextLine();
             Dijkstra(place1, place2);
         }
+        else if(command.equals("Kruskal")){
+            Kruskal();
+        }
         else System.out.println("Please try again");
+    }
+
+    public static ArrayList<Edge> edge = new ArrayList<>();
+    public static int[] arr;
+    public static int[] size;
+    public static void Kruskal(){
+        arr = new int[list.size()];
+        size = new int[list.size()];
+        for (int i = 0;i<list.size();i++) {
+            LinkedList<Node> n = list.get(i);
+            for (int j = 1; j < n.size(); j++)
+                //int index = list.indexOf(circuit(n.get(j).placeName));
+                //if(i<index)
+                    edge.add(new Edge(i, list.indexOf(circuit(n.get(j).placeName)), n.get(j).weight));
+        }
+        for(int i = 0;i<list.size();i++){
+            arr[i] = i;
+            size[i] = 1;
+        }
+        for (Edge value : edge) {
+            if (findSet(value.a) != findSet(value.b))
+                weightedUnion(value.a, value.b);
+        }
+        kruskalPrint();
+    }
+    public static int findSet(int x){
+        if(x != arr[x])
+            arr[x] = findSet(arr[x]);
+        return arr[x];
+    }
+    public static void weightedUnion(int u, int v){
+        int x = findSet(u);
+        int y = findSet(v);
+        if(size[x]>size[y]){
+            arr[x] = y;
+            size[x] = size[x] + size[y];
+        }
+        else{
+            arr[y] = x;
+            size[y] = size[y] + size[x];
+        }
+    }
+    public static void kruskalPrint(){
+        for(int i=0;i<list.size();i++){
+            LinkedList<Node> n = list.get(i);
+            ArrayList<Integer> lst = new ArrayList<>();
+            int cnt = 0;
+            System.out.print(i+" "+n.getFirst().longitude+" "+n.getFirst().latitude+" ");
+            for(int j = 1; j < n.size();j++){
+                int index = list.indexOf(circuit(n.get(i).placeName));
+                if(findSet(index)==findSet(i)){
+                    cnt++;
+                    lst.add(index);
+                }
+            }
+            System.out.print(cnt+" ");
+            for(int j=0;j<lst.size();j++)
+                System.out.print(lst.get(i)+" ");
+            System.out.println();
+        }
     }
 
     public static void Dijkstra(String place1, String place2) {
