@@ -11,29 +11,30 @@ class Node implements Comparable<Node>{
     boolean isVisited;
     double d;
     Node pi;
+    int index;
 
-    public Node (String placeName, double longitude, double latitude, double weight){
+    public Node (String placeName, double longitude, double latitude, double weight, int index){
         this.placeName = placeName;
         this.longitude = longitude;
         this.latitude = latitude;
         this.weight = weight;
         this.isVisited = false;
+        this.index = index;
     }
     @Override
     public int compareTo(Node a){ return this.d>=a.d ? 1:-1; }
 }
 
-class Edge implements Comparable<Edge>{ //크루스칼 노드
+class Edge{ //크루스칼 노드
     int a;
     int b;
     double weight;
+    boolean can;
     public Edge(int a, int b, double weight){
         this.a = a;
         this.b = b;
         this.weight = weight;
     }
-    @Override
-    public int compareTo(Edge e){return this.weight>=e.weight ? 1:-1;}
 }
 
 public class Graph {
@@ -80,19 +81,24 @@ public class Graph {
         size = new int[list.size()];
         for (int i = 0;i<list.size();i++) {
             LinkedList<Node> n = list.get(i);
-            for (int j = 1; j < n.size(); j++)
-                //int index = list.indexOf(circuit(n.get(j).placeName));
-                //if(i<index)
-                    edge.add(new Edge(i, list.indexOf(circuit(n.get(j).placeName)), n.get(j).weight));
+            for (int j = 1; j < n.size(); j++){
+                int index = n.get(j).index;
+                if(i<index)
+                    edge.add(new Edge(i, index, n.get(j).weight));
+            }
         }
+        edge.sort((o1, o2) -> o1.weight >= o2.weight ? 1 : -1);
         for(int i = 0;i<list.size();i++){
             arr[i] = i;
             size[i] = 1;
         }
         for (Edge value : edge) {
-            if (findSet(value.a) != findSet(value.b))
+            if (findSet(value.a) != findSet(value.b)){
+                value.can = true;
                 weightedUnion(value.a, value.b);
+            }
         }
+        edge.sort((o1, o2) -> o1.a >= o2.a ? 1 : -1);
         kruskalPrint();
     }
     public static int findSet(int x){
@@ -113,21 +119,23 @@ public class Graph {
         }
     }
     public static void kruskalPrint(){
+        int k=0;
+        // 양방향 출력
         for(int i=0;i<list.size();i++){
             LinkedList<Node> n = list.get(i);
             ArrayList<Integer> lst = new ArrayList<>();
             int cnt = 0;
             System.out.print(i+" "+n.getFirst().longitude+" "+n.getFirst().latitude+" ");
-            for(int j = 1; j < n.size();j++){
-                int index = list.indexOf(circuit(n.get(i).placeName));
-                if(findSet(index)==findSet(i)){
+            while(k<edge.size()&&edge.get(k).a==i){
+                if(edge.get(k).can){
                     cnt++;
-                    lst.add(index);
+                    lst.add(edge.get(k).b);
                 }
+                k++;
             }
             System.out.print(cnt+" ");
-            for(int j=0;j<lst.size();j++)
-                System.out.print(lst.get(i)+" ");
+            Collections.sort(lst);
+            for (int integer : lst) System.out.print(integer + " ");
             System.out.println();
         }
     }
@@ -236,7 +244,7 @@ public class Graph {
         for(String i : fileset){
             StringTokenizer st = new StringTokenizer(i, "\t");
             LinkedList<Node> l = new LinkedList<>();
-            l.add(new Node(st.nextToken(), Double.parseDouble(st.nextToken()), Double.parseDouble(st.nextToken()), 0));
+            l.add(new Node(st.nextToken(), Double.parseDouble(st.nextToken()), Double.parseDouble(st.nextToken()), 0, list.size()));
             list.add(l);
         }
     }
@@ -245,6 +253,7 @@ public class Graph {
         for(int i=0;i<fileset.size();) {
             StringTokenizer st = new StringTokenizer(fileset.get(i), "\t");
             LinkedList<Node> lst = circuit(st.nextToken());
+            double[] s = {4, 8, 8, 11, 7, 4, 2, 9, 14, 10, 2, 6, 1, 7};
             int j=i;
             while(j<fileset.size()){
                 StringTokenizer token = new StringTokenizer(fileset.get(j), "\t");
@@ -252,8 +261,8 @@ public class Graph {
                 LinkedList<Node> twoLst = circuit(token.nextToken());
                 Node n = twoLst.getFirst();
                 Node n2 = lst.getFirst();
-                lst.add(new Node(n.placeName, n.longitude, n.latitude, calDistance(n2.latitude, n2.longitude, n.latitude, n.longitude)));
-                twoLst.add(new Node(n2.placeName, n2.longitude, n.latitude, calDistance(n.latitude, n.longitude, n2.latitude, n2.longitude)));
+                lst.add(new Node(n.placeName, n.longitude, n.latitude, calDistance(n2.latitude, n2.longitude, n.latitude, n.longitude), list.indexOf(twoLst)));
+                twoLst.add(new Node(n2.placeName, n2.longitude, n.latitude, calDistance(n.latitude, n.longitude, n2.latitude, n2.longitude), list.indexOf(lst)));
                 j++;
             }
             i=j;
