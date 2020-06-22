@@ -253,7 +253,6 @@ public class Graph {
         for(int i=0;i<fileset.size();) {
             StringTokenizer st = new StringTokenizer(fileset.get(i), "\t");
             LinkedList<Node> lst = circuit(st.nextToken());
-            double[] s = {4, 8, 8, 11, 7, 4, 2, 9, 14, 10, 2, 6, 1, 7};
             int j=i;
             while(j<fileset.size()){
                 StringTokenizer token = new StringTokenizer(fileset.get(j), "\t");
